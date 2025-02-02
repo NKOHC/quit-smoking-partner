@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>戒烟互助伙伴</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>戒烟互助伙伴</h1>
+        
+        <div class="users-container">
+            <!-- 用户 1 -->
+            <div class="user-card">
+                <h2>用户 1</h2>
+                <div class="timer">
+                    <div class="time-display">
+                        <span class="days">0</span>天
+                        <span class="hours">0</span>时
+                        <span class="minutes">0</span>分
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 0%"></div>
+                </div>
+                <div class="mood-selector">
+                    <button class="mood" data-mood="😊">😊</button>
+                    <button class="mood" data-mood="😐">😐</button>
+                    <button class="mood" data-mood="😫">😫</button>
+                </div>
+                <button class="cheer-button">为Ta加油</button>
+                <button class="reset-button">重新开始</button>
+            </div>
+
+            <!-- 用户 2 -->
+            <div class="user-card">
+                <h2>用户 2</h2>
+                <div class="timer">
+                    <div class="time-display">
+                        <span class="days">0</span>天
+                        <span class="hours">0</span>时
+                        <span class="minutes">0</span>分
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 0%"></div>
+                </div>
+                <div class="mood-selector">
+                    <button class="mood" data-mood="😊">😊</button>
+                    <button class="mood" data-mood="😐">😐</button>
+                    <button class="mood" data-mood="😫">😫</button>
+                </div>
+                <button class="cheer-button">为Ta加油</button>
+                <button class="reset-button">重新开始</button>
+            </div>
+        </div>
+
+        <div class="milestones">
+            <h3>里程碑</h3>
+            <ul id="milestone-list">
+                <!-- 里程碑将通过 JavaScript 动态添加 -->
+            </ul>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
