@@ -4,7 +4,7 @@
 
 ## 在线预览
 
-访问 GitHub Pages 链接：https://YOUR_USERNAME.github.io/quit-smoking-partner/
+访问 GitHub Pages 链接：https://NKOHC.github.io/quit-smoking-partner/
 
 ## 功能特点
 
