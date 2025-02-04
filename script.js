@@ -1,151 +1,276 @@
-class QuitSmokingTracker {
-    constructor(userIndex) {
-        this.userIndex = userIndex;
-        this.startTime = null;
-        this.currentMood = null;
-        this.longestStreak = 0;
-        this.loadData();
+class QuitSmokingApp {
+    constructor() {
+        this.initializeData();
         this.initializeElements();
         this.setupEventListeners();
+        this.updateDisplay();
+        this.loadTips();
+        this.checkFirstVisit();
+    }
+
+    initializeData() {
+        // 从 localStorage 加载数据或使用默认值
+        const savedData = JSON.parse(localStorage.getItem('quitSmokingData')) || {};
+        this.data = {
+            startDate: savedData.startDate || null,
+            duration: savedData.duration || 30,
+            dailyCount: savedData.dailyCount || 10,
+            price: savedData.price || 25,
+            urgeRecords: savedData.urgeRecords || [],
+            ...savedData
+        };
     }
 
     initializeElements() {
-        const userCard = document.querySelectorAll('.user-card')[this.userIndex];
-        this.timerElements = {
-            days: userCard.querySelector('.days'),
-            hours: userCard.querySelector('.hours'),
-            minutes: userCard.querySelector('.minutes')
+        // 页面元素
+        this.pages = {
+            progress: document.getElementById('progressPage'),
+            goal: document.getElementById('goalPage'),
+            profile: document.getElementById('profilePage'),
+            history: document.getElementById('historyPage')
         };
-        this.progressBar = userCard.querySelector('.progress');
-        this.moodButtons = userCard.querySelectorAll('.mood');
-        this.cheerButton = userCard.querySelector('.cheer-button');
-        this.resetButton = userCard.querySelector('.reset-button');
+
+        // 导航按钮
+        this.navBtns = document.querySelectorAll('.nav-btn');
+
+        // 目标设定表单
+        this.goalForm = document.getElementById('goalForm');
+        this.startDateInput = document.getElementById('startDate');
+        this.durationInput = document.getElementById('duration');
+        this.dailyCountInput = document.getElementById('dailyCount');
+        this.priceInput = document.getElementById('price');
+
+        // 统计显示
+        this.daysPassedElement = document.getElementById('daysPassed');
+        this.daysLeftElement = document.getElementById('daysLeft');
+        this.moneySavedElement = document.getElementById('moneySaved');
+        this.reducedCountElement = document.getElementById('reducedCount');
+
+        // 冲动记录
+        this.urgeModal = document.getElementById('urgeModal');
+        this.urgeForm = document.getElementById('urgeForm');
+        this.urgeTimeInput = document.getElementById('urgeTime');
+        this.urgeCountInput = document.getElementById('urgeCount');
+        this.urgeNecessityInput = document.getElementById('urgeNecessity');
+        this.urgeSceneInput = document.getElementById('urgeScene');
+        this.necessityValueElement = document.getElementById('necessityValue');
+
+        // 历史记录
+        this.historyList = document.getElementById('historyList');
+
+        // 其他按钮
+        this.addUrgeBtn = document.getElementById('addUrgeBtn');
+        this.viewHistoryBtn = document.getElementById('viewHistoryBtn');
+        this.backBtns = document.querySelectorAll('.back-btn');
+        this.closeModalBtn = document.querySelector('.close-btn');
+
+        // 提示容器
+        this.tipsContainer = document.getElementById('tipsList');
     }
 
     setupEventListeners() {
-        this.moodButtons.forEach(button => {
-            button.addEventListener('click', () => this.setMood(button.dataset.mood));
+        // 导航切换
+        this.navBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetPage = btn.dataset.page;
+                this.switchPage(targetPage);
+            });
         });
 
-        this.cheerButton.addEventListener('click', () => this.cheer());
-        this.resetButton.addEventListener('click', () => this.reset());
+        // 目标设定表单
+        this.goalForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.saveGoalSettings();
+        });
+
+        // 冲动记录相关
+        this.addUrgeBtn.addEventListener('click', () => this.openUrgeModal());
+        this.closeModalBtn.addEventListener('click', () => this.closeUrgeModal());
+        this.urgeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.saveUrgeRecord();
+        });
+        this.urgeNecessityInput.addEventListener('input', () => {
+            this.necessityValueElement.textContent = this.urgeNecessityInput.value;
+        });
+
+        // 历史记录
+        this.viewHistoryBtn.addEventListener('click', () => {
+            this.loadHistoryRecords();
+            this.switchPage('historyPage');
+        });
+
+        // 返回按钮
+        this.backBtns.forEach(btn => {
+            btn.addEventListener('click', () => this.switchPage('progressPage'));
+        });
+
+        // 设置当前时间为默认值
+        const now = new Date();
+        this.urgeTimeInput.value = now.toISOString().slice(0, 16);
     }
 
-    start() {
-        if (!this.startTime) {
-            this.startTime = new Date().getTime();
-            this.saveData();
-            this.updateDisplay();
+    checkFirstVisit() {
+        if (!this.data.startDate) {
+            this.switchPage('goalPage');
         }
     }
 
-    reset() {
-        const currentStreak = this.calculateStreak();
-        if (currentStreak > this.longestStreak) {
-            this.longestStreak = currentStreak;
-        }
-        this.startTime = new Date().getTime();
+    switchPage(pageId) {
+        // 隐藏所有页面
+        Object.values(this.pages).forEach(page => page.classList.add('hidden'));
+        
+        // 显示目标页面
+        this.pages[pageId.replace('Page', '')].classList.remove('hidden');
+
+        // 更新导航按钮状态
+        this.navBtns.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.page === pageId);
+        });
+    }
+
+    saveGoalSettings() {
+        this.data.startDate = this.startDateInput.value;
+        this.data.duration = parseInt(this.durationInput.value);
+        this.data.dailyCount = parseInt(this.dailyCountInput.value);
+        this.data.price = parseFloat(this.priceInput.value);
+        
         this.saveData();
         this.updateDisplay();
+        this.showNotification('目标设置已保存！');
+        this.switchPage('progressPage');
     }
 
-    calculateStreak() {
-        if (!this.startTime) return 0;
-        const now = new Date().getTime();
-        return Math.floor((now - this.startTime) / (1000 * 60 * 60 * 24));
+    openUrgeModal() {
+        this.urgeModal.classList.remove('hidden');
+        const now = new Date();
+        this.urgeTimeInput.value = now.toISOString().slice(0, 16);
+    }
+
+    closeUrgeModal() {
+        this.urgeModal.classList.add('hidden');
+    }
+
+    saveUrgeRecord() {
+        const record = {
+            time: this.urgeTimeInput.value,
+            count: parseInt(this.urgeCountInput.value),
+            necessity: parseInt(this.urgeNecessityInput.value),
+            scene: this.urgeSceneInput.value,
+            timestamp: new Date().getTime()
+        };
+
+        this.data.urgeRecords.push(record);
+        this.saveData();
+        this.updateDisplay();
+        this.showNotification('记录已保存！');
+        this.closeUrgeModal();
+        this.urgeForm.reset();
+
+        // 重置表单默认值
+        const now = new Date();
+        this.urgeTimeInput.value = now.toISOString().slice(0, 16);
+        this.necessityValueElement.textContent = '5';
+    }
+
+    loadHistoryRecords() {
+        const records = this.data.urgeRecords
+            .sort((a, b) => b.timestamp - a.timestamp)
+            .map(record => {
+                const date = new Date(record.time);
+                return `
+                    <div class="history-item">
+                        <div class="history-time">${date.toLocaleString()}</div>
+                        <div class="history-count">数量：${record.count}根</div>
+                        <div class="history-necessity">必要性：${record.necessity}/10</div>
+                        <div class="history-scene">场景：${record.scene}</div>
+                    </div>
+                `;
+            })
+            .join('');
+
+        this.historyList.innerHTML = records || '<p class="empty-history">暂无记录</p>';
     }
 
     updateDisplay() {
-        if (!this.startTime) return;
+        if (!this.data.startDate) return;
 
-        const now = new Date().getTime();
-        const diff = now - this.startTime;
+        const startDate = new Date(this.data.startDate);
+        const now = new Date();
+        const daysPassed = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+        const daysLeft = Math.max(0, this.data.duration - daysPassed);
 
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        // 更新统计数据
+        this.daysPassedElement.textContent = Math.max(0, daysPassed);
+        this.daysLeftElement.textContent = daysLeft;
 
-        this.timerElements.days.textContent = days;
-        this.timerElements.hours.textContent = hours;
-        this.timerElements.minutes.textContent = minutes;
+        // 计算节省金额
+        const cigarettesPerPack = 20;
+        const dailySavings = (this.data.dailyCount * this.data.price) / cigarettesPerPack;
+        const totalSaved = (dailySavings * daysPassed).toFixed(2);
+        this.moneySavedElement.textContent = totalSaved;
 
-        // 更新进度条（假设30天为一个周期）
-        const progress = Math.min((days / 30) * 100, 100);
-        this.progressBar.style.width = `${progress}%`;
-
-        this.checkMilestones(days);
+        // 计算减少数量
+        const reducedCount = this.data.dailyCount * daysPassed;
+        this.reducedCountElement.textContent = reducedCount;
     }
 
-    setMood(mood) {
-        this.currentMood = mood;
-        this.moodButtons.forEach(button => {
-            button.style.opacity = button.dataset.mood === mood ? '1' : '0.5';
-        });
-        this.saveData();
-    }
+    loadTips() {
+        const tips = [
+            '每支烟只抽一半，逐步减少尼古丁摄入',
+            '把打火机放在不容易拿到的地方',
+            '尝试用深呼吸代替吸烟的冲动',
+            '记录每次想吸烟的场景，找出触发因素',
+            '设定小目标，一次只考虑戒烟一天',
+            '把省下的烟钱存起来，奖励自己',
+            '避开会诱发吸烟欲望的场所和活动',
+            '找到替代活动，比如喝水或散步'
+        ];
 
-    cheer() {
-        const cheerButton = this.cheerButton;
-        cheerButton.textContent = '加油！💪';
-        cheerButton.disabled = true;
-        setTimeout(() => {
-            cheerButton.textContent = '为Ta加油';
-            cheerButton.disabled = false;
-        }, 2000);
-    }
-
-    checkMilestones(days) {
-        const milestones = {
-            1: '恭喜坚持1天！',
-            3: '太棒了！已经3天了！',
-            7: '一周里程碑达成！',
-            14: '两周！继续加油！',
-            30: '一个月！你太厉害了！',
-            60: '两个月！无人能挡！',
-            90: '三个月！你是戒烟大师！'
-        };
-
-        if (milestones[days]) {
-            this.showMilestone(milestones[days]);
-        }
-    }
-
-    showMilestone(message) {
-        const milestoneList = document.getElementById('milestone-list');
-        const milestone = document.createElement('li');
-        milestone.textContent = message;
-        milestoneList.insertBefore(milestone, milestoneList.firstChild);
+        // 随机选择3条提示显示
+        const selectedTips = tips.sort(() => 0.5 - Math.random()).slice(0, 3);
+        this.tipsContainer.innerHTML = selectedTips.map(tip => `<p>💡 ${tip}</p>`).join('');
     }
 
     saveData() {
-        const data = {
-            startTime: this.startTime,
-            currentMood: this.currentMood,
-            longestStreak: this.longestStreak
-        };
-        localStorage.setItem(`user${this.userIndex}`, JSON.stringify(data));
+        localStorage.setItem('quitSmokingData', JSON.stringify(this.data));
     }
 
-    loadData() {
-        const data = JSON.parse(localStorage.getItem(`user${this.userIndex}`));
-        if (data) {
-            this.startTime = data.startTime;
-            this.currentMood = data.currentMood;
-            this.longestStreak = data.longestStreak;
-        }
+    showNotification(message) {
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        `;
+
+        setTimeout(() => {
+            notification.style.opacity = '1';
+            notification.style.transform = 'translateY(0)';
+        }, 100);
+
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateY(-20px)';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
     }
 }
 
-// 初始化两个用户的戒烟追踪器
-const user1 = new QuitSmokingTracker(0);
-const user2 = new QuitSmokingTracker(1);
-
-// 启动计时器
-user1.start();
-user2.start();
-
-// 定期更新显示
-setInterval(() => {
-    user1.updateDisplay();
-    user2.updateDisplay();
-}, 60000); // 每分钟更新一次 
+// 初始化应用
+document.addEventListener('DOMContentLoaded', () => {
+    new QuitSmokingApp();
+}); 

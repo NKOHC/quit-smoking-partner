@@ -3,64 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>戒烟互助伙伴</title>
+    <title>戒烟助手</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>戒烟互助伙伴</h1>
-        
-        <div class="users-container">
-            <!-- 用户 1 -->
-            <div class="user-card">
-                <h2>用户 1</h2>
-                <div class="timer">
-                    <div class="time-display">
-                        <span class="days">0</span>天
-                        <span class="hours">0</span>时
-                        <span class="minutes">0</span>分
+        <!-- 主页面容器 -->
+        <div id="pageContainer">
+            <!-- 进度追踪页 -->
+            <div id="progressPage" class="page">
+                <header>
+                    <h1>戒烟助手</h1>
+                </header>
+
+                <!-- 进度追踪 -->
+                <section class="progress-tracking">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>已戒烟</h3>
+                            <p class="big-number"><span id="daysPassed">0</span>天</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>剩余天数</h3>
+                            <p class="big-number"><span id="daysLeft">30</span>天</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>节省金额</h3>
+                            <p class="big-number">¥<span id="moneySaved">0</span></p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>减少数量</h3>
+                            <p class="big-number"><span id="reducedCount">0</span>根</p>
+                        </div>
                     </div>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress" style="width: 0%"></div>
-                </div>
-                <div class="mood-selector">
-                    <button class="mood" data-mood="😊">😊</button>
-                    <button class="mood" data-mood="😐">😐</button>
-                    <button class="mood" data-mood="😫">😫</button>
-                </div>
-                <button class="cheer-button">为Ta加油</button>
-                <button class="reset-button">重新开始</button>
+                </section>
+
+                <!-- 快捷操作 -->
+                <section class="quick-actions">
+                    <button id="addUrgeBtn" class="btn-primary">记录冲动</button>
+                    <button id="viewHistoryBtn" class="btn-secondary">查看历史</button>
+                </section>
             </div>
 
-            <!-- 用户 2 -->
-            <div class="user-card">
-                <h2>用户 2</h2>
-                <div class="timer">
-                    <div class="time-display">
-                        <span class="days">0</span>天
-                        <span class="hours">0</span>时
-                        <span class="minutes">0</span>分
+            <!-- 目标设定页 -->
+            <div id="goalPage" class="page hidden">
+                <header>
+                    <h1>目标设定</h1>
+                </header>
+                <section class="goal-setting">
+                    <form id="goalForm">
+                        <div class="form-group">
+                            <label for="startDate">起始日期</label>
+                            <input type="date" id="startDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="duration">戒烟周期（天）</label>
+                            <input type="number" id="duration" value="30" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="dailyCount">当前每天吸烟量（根）</label>
+                            <input type="number" id="dailyCount" value="10" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="price">香烟单价（元/包）</label>
+                            <input type="number" id="price" value="25" min="1" required>
+                        </div>
+                        <button type="submit" class="btn-primary">保存设置</button>
+                    </form>
+                </section>
+            </div>
+
+            <!-- 我的页面 -->
+            <div id="profilePage" class="page hidden">
+                <header>
+                    <h1>我的</h1>
+                </header>
+                <section class="profile-content">
+                    <div id="loginContainer">
+                        <!-- 登录状态下显示用户信息，未登录显示登录按钮 -->
                     </div>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress" style="width: 0%"></div>
-                </div>
-                <div class="mood-selector">
-                    <button class="mood" data-mood="😊">😊</button>
-                    <button class="mood" data-mood="😐">😐</button>
-                    <button class="mood" data-mood="😫">😫</button>
-                </div>
-                <button class="cheer-button">为Ta加油</button>
-                <button class="reset-button">重新开始</button>
+                </section>
             </div>
         </div>
 
-        <div class="milestones">
-            <h3>里程碑</h3>
-            <ul id="milestone-list">
-                <!-- 里程碑将通过 JavaScript 动态添加 -->
-            </ul>
+        <!-- 底部导航栏 -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-page="progressPage">
+                <span class="icon">📊</span>
+                <span>进度</span>
+            </button>
+            <button class="nav-btn" data-page="goalPage">
+                <span class="icon">🎯</span>
+                <span>目标</span>
+            </button>
+            <button class="nav-btn" data-page="profilePage">
+                <span class="icon">👤</span>
+                <span>我的</span>
+            </button>
+        </nav>
+
+        <!-- 冲动记录弹窗 -->
+        <div id="urgeModal" class="modal hidden">
+            <div class="modal-content">
+                <header>
+                    <h2>记录冲动</h2>
+                    <button class="close-btn">&times;</button>
+                </header>
+                <form id="urgeForm">
+                    <div class="form-group">
+                        <label for="urgeTime">时间</label>
+                        <input type="datetime-local" id="urgeTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="urgeCount">吸烟数量</label>
+                        <input type="number" id="urgeCount" min="1" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="urgeNecessity">必要性（1-10分）</label>
+                        <input type="range" id="urgeNecessity" min="1" max="10" value="5">
+                        <span id="necessityValue">5</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="urgeScene">场景描述</label>
+                        <textarea id="urgeScene" rows="3" placeholder="描述当前场景和心情..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">保存记录</button>
+                </form>
+                <!-- 智能提示 -->
+                <div class="smart-tips">
+                    <h3>建议</h3>
+                    <div id="tipsList" class="tips-container">
+                        <!-- 提示将通过 JavaScript 动态添加 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 历史记录页面 -->
+        <div id="historyPage" class="page hidden">
+            <header>
+                <button class="back-btn">返回</button>
+                <h1>历史记录</h1>
+            </header>
+            <div id="historyList" class="history-list">
+                <!-- 历史记录将通过 JavaScript 动态添加 -->
+            </div>
         </div>
     </div>
     <script src="script.js"></script>
