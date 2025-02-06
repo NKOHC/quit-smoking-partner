@@ -1,0 +1,13 @@
+{
+  "name": "quit-smoking-partner",
+  "version": "1.0.0",
+  "description": "A web app to help quit smoking",
+  "main": "index.js",
+  "scripts": {
+    "start": "serve public",
+    "build": "mkdir -p public && cp -r src/assets public/ && cp src/js/* public/ && cp src/services/* public/"
+  },
+  "dependencies": {
+    "serve": "^14.2.1"
+  }
+} 

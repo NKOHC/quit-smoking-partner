@@ -1,0 +1,10 @@
+name: quit-smoking-partner
+services:
+  - name: web
+    type: web
+    env:
+      - name: NODE_ENV
+        value: production
+    buildCommand: npm run build
+    startCommand: npm start
+    port: 3000 
