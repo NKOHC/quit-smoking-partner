@@ -5,9 +5,14 @@
   "main": "index.js",
   "scripts": {
     "start": "serve public",
-    "build": "mkdir -p public && cp -r src/assets public/ && cp src/js/* public/ && cp src/services/* public/"
+    "build": "rm -rf public/* && mkdir -p public && cp -r src/* public/",
+    "dev": "npm run build && npm start",
+    "watch": "nodemon --watch src --exec 'npm run build'"
   },
   "dependencies": {
     "serve": "^14.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
   }
-} 
+}

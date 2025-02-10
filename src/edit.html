@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑目标 - 戒烟助手</title>
+    <link rel="stylesheet" href="assets/styles/main.css">
+    <style>
+        .edit-page {
+            padding: 20px 16px;
+            background: #F5F5F5;
+            min-height: 100vh;
+        }
+
+        .page-desc {
+            color: #666;
+            text-align: center;
+            margin: 20px 0 30px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .form-label {
+            color: #333;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .required::before {
+            content: '*';
+            color: #FF4D4F;
+            margin-right: 4px;
+        }
+
+        .form-input {
+            border: none;
+            text-align: right;
+            font-size: 16px;
+            color: #333;
+            width: 120px;
+            padding: 4px;
+        }
+
+        .form-input:focus {
+            outline: none;
+        }
+
+        .input-suffix {
+            color: #666;
+            margin-left: 4px;
+        }
+
+        .save-btn {
+            background: #E9C899;
+            color: black;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            margin-top: 32px;
+            cursor: pointer;
+        }
+
+        .save-btn:active {
+            background: #DEB989;
+        }
+
+        .bottom-tip {
+            color: #999;
+            text-align: center;
+            margin-top: 16px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="edit-page">
+        <h1>编辑目标</h1>
+        
+        <p class="page-desc">
+            按照《这本书能帮你戒烟》的建议，科学设定戒烟计划
+        </p>
+
+        <form id="editForm">
+            <div class="form-group">
+                <label class="form-label required">起始日期</label>
+                <input type="date" class="form-input" value="2025-01-01" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label required">戒烟周期</label>
+                <div>
+                    <input type="number" class="form-input" value="30" required>
+                    <span class="input-suffix">天</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label required">当前每天抽</label>
+                <div>
+                    <input type="number" class="form-input" value="10" required>
+                    <span class="input-suffix">根</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label required">香烟售价</label>
+                <div>
+                    <input type="number" class="form-input" value="25" required>
+                    <span class="input-suffix">元/包</span>
+                </div>
+            </div>
+
+            <button type="submit" class="save-btn">保存</button>
+            
+            <p class="bottom-tip">相信你可以的，加油！</p>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // TODO: 处理表单提交
+            console.log('Form submitted');
+        });
+    </script>
+</body>
+</html> 

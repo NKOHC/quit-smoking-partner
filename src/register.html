@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - 戒烟助手</title>
+    <link rel="stylesheet" href="assets/styles/main.css">
+    <style>
+        /* 使用与登录页相同的样式 */
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            background: #F5F5F5;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 40px;
+        }
+
+        .tab-group {
+            display: flex;
+            width: 100%;
+            max-width: 280px;
+            margin-bottom: 32px;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .tab-btn.active {
+            background: #f5f5f5;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group {
+            width: 100%;
+            max-width: 280px;
+            margin-bottom: 16px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .form-input::placeholder {
+            color: #999;
+        }
+
+        .code-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .code-input {
+            flex: 1;
+        }
+
+        .code-btn {
+            padding: 12px 16px;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            background: white;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .submit-btn {
+            width: 100%;
+            max-width: 280px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #1a1a1a;
+            color: white;
+            font-size: 16px;
+            margin-top: 24px;
+        }
+
+        .terms {
+            margin-top: 16px;
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+        }
+
+        .terms a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        /* 添加协议勾选框样式 */
+        .agreement {
+            display: flex;
+            align-items: flex-start;
+            margin-top: 16px;
+            gap: 8px;
+        }
+
+        .checkbox {
+            width: 16px;
+            height: 16px;
+            margin-top: 2px;
+        }
+
+        .agreement-text {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .agreement-link {
+            color: #333;
+            text-decoration: none;
+        }
+
+        /* 禁用状态的按钮样式 */
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-page">
+        <h1 class="page-title">戒烟助手</h1>
+
+        <div class="tab-group">
+            <button class="tab-btn" onclick="location.href='login.html'">登录</button>
+            <button class="tab-btn active">注册</button>
+        </div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <input type="tel" class="form-input" placeholder="请输入手机号" required>
+            </div>
+
+            <div class="form-group code-group">
+                <input type="text" class="form-input code-input" placeholder="请输入验证码" required>
+                <button type="button" class="code-btn">获取验证码</button>
+            </div>
+
+            <div class="form-group">
+                <input type="text" class="form-input" placeholder="请输入昵称" required>
+            </div>
+
+            <div class="agreement">
+                <input type="checkbox" id="agreeTerms" class="checkbox">
+                <label for="agreeTerms" class="agreement-text">
+                    我已阅读并同意
+                    <a href="terms.html" class="agreement-link">《用户协议》</a>
+                    和
+                    <a href="privacy.html" class="agreement-link">《隐私政策》</a>
+                </label>
+            </div>
+
+            <button type="submit" class="submit-btn" disabled>注册</button>
+        </form>
+    </div>
+
+    <script>
+        // 验证手机号格式
+        function isValidPhone(phone) {
+            return /^1[3-9]\d{9}$/.test(phone);
+        }
+
+        // 处理验证码按钮
+        let countdown = 0;
+        const codeBtn = document.querySelector('.code-btn');
+        const phoneInput = document.querySelector('input[type="tel"]');
+
+        codeBtn.addEventListener('click', function() {
+            if (!isValidPhone(phoneInput.value)) {
+                alert('请输入正确的手机号');
+                return;
+            }
+
+            if (countdown > 0) return;
+
+            // 开始倒计时
+            countdown = 60;
+            codeBtn.disabled = true;
+            
+            const timer = setInterval(() => {
+                countdown--;
+                codeBtn.textContent = `${countdown}s`;
+                
+                if (countdown === 0) {
+                    clearInterval(timer);
+                    codeBtn.disabled = false;
+                    codeBtn.textContent = '获取验证码';
+                }
+            }, 1000);
+
+            // TODO: 发送验证码
+            console.log('发送验证码到:', phoneInput.value);
+        });
+
+        // 处理协议勾选
+        const agreeCheckbox = document.getElementById('agreeTerms');
+        const submitBtn = document.querySelector('.submit-btn');
+        const nicknameInput = document.querySelector('input[type="text"]:not(.code-input)');
+
+        function checkFormValid() {
+            const isPhoneValid = isValidPhone(phoneInput.value);
+            const hasCode = document.querySelector('.code-input').value.length > 0;
+            const hasNickname = nicknameInput.value.length > 0;
+            const hasAgreed = agreeCheckbox.checked;
+            
+            submitBtn.disabled = !(isPhoneValid && hasCode && hasNickname && hasAgreed);
+        }
+
+        agreeCheckbox.addEventListener('change', checkFormValid);
+        phoneInput.addEventListener('input', checkFormValid);
+        nicknameInput.addEventListener('input', checkFormValid);
+
+        // 更新表单提交处理
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!agreeCheckbox.checked) {
+                alert('请阅读并同意用户协议和隐私政策');
+                return;
+            }
+
+            const phone = phoneInput.value;
+            const code = document.querySelector('.code-input').value;
+            const nickname = nicknameInput.value;
+
+            if (!isValidPhone(phone)) {
+                alert('请输入正确的手机号');
+                return;
+            }
+
+            if (!code) {
+                alert('请输入验证码');
+                return;
+            }
+
+            // TODO: 处理注册
+            console.log('注册:', { phone, code, nickname });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>冲动记录 - 戒烟助手</title>
+    <link rel="stylesheet" href="assets/styles/main.css">
+    <style>
+        .history-page {
+            padding: 20px 16px;
+            background: #F5F5F5;
+            min-height: 100vh;
+        }
+
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .day-group {
+            margin-bottom: 24px;
+        }
+
+        .day-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .day-date {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .day-summary {
+            margin-left: 8px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .record-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .record-time {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .edit-btn {
+            color: #999;
+            background: none;
+            border: none;
+            padding: 4px;
+            cursor: pointer;
+        }
+
+        .record-content {
+            color: #333;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .record-item {
+            margin-bottom: 8px;
+        }
+
+        .record-label {
+            color: #666;
+            margin-right: 8px;
+        }
+
+        .record-value {
+            color: #333;
+        }
+
+        .necessity-score {
+            color: #f45b49;
+        }
+    </style>
+</head>
+<body>
+    <div class="history-page">
+        <header class="page-header">
+            <h1 class="page-title">冲动记录</h1>
+            <p class="page-subtitle">道阻且长，行之将至 💪</p>
+        </header>
+
+        <div class="records-container">
+            <!-- 2025-02-04 -->
+            <div class="day-group">
+                <div class="day-header">
+                    <span class="day-date">2025-02-04</span>
+                    <span class="day-summary">抽了 3 根</span>
+                </div>
+
+                <div class="record-card">
+                    <div class="record-header">
+                        <span class="record-time">12:45</span>
+                        <button class="edit-btn">修改</button>
+                    </div>
+                    <div class="record-content">
+                        <div class="record-item">
+                            <span class="record-label">根数：</span>
+                            <span class="record-value">1</span>
+                        </div>
+                        <div class="record-item">
+                            <span class="record-label">备注说明：</span>
+                            <span class="record-value">画 UI 到 12点，抽一根，准备去吃饭+买三金</span>
+                        </div>
+                        <div class="record-item">
+                            <span class="record-label">必要性：</span>
+                            <span class="record-value necessity-score">6/10</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 更多记录卡片 -->
+                <div class="record-card">
+                    <div class="record-header">
+                        <span class="record-time">11:45</span>
+                        <button class="edit-btn">修改</button>
+                    </div>
+                    <div class="record-content">
+                        <div class="record-item">
+                            <span class="record-label">根数：</span>
+                            <span class="record-value">1</span>
+                        </div>
+                        <div class="record-item">
+                            <span class="record-label">备注说明：</span>
+                            <span class="record-value">这里是备注 xxxx</span>
+                        </div>
+                        <div class="record-item">
+                            <span class="record-label">必要性：</span>
+                            <span class="record-value necessity-score">6/10</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2025-02-03 -->
+            <div class="day-group">
+                <div class="day-header">
+                    <span class="day-date">2025-02-03</span>
+                    <span class="day-summary">抽了 1 根</span>
+                </div>
+
+                <div class="record-card">
+                    <div class="record-header">
+                        <span class="record-time">12:45</span>
+                        <button class="edit-btn">修改</button>
+                    </div>
+                    <div class="record-content">
+                        <div class="record-item">
+                            <span class="record-label">根数：</span>
+                            <span class="record-value">1</span>
+                        </div>
+                        <div class="record-item">
+                            <span class="record-label">备注说明：</span>
+                            <span class="record-value">这里是备注 xxxx</span>
+                        </div>
+                        <div class="record-item">
+                            <span class="record-label">必要性：</span>
+                            <span class="record-value necessity-score">4/10</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 处理修改按钮点击
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const recordCard = this.closest('.record-card');
+                const time = recordCard.querySelector('.record-time').textContent;
+                const quantity = recordCard.querySelector('.record-value').textContent;
+                // TODO: 跳转到编辑页面
+                window.location.href = `record.html?time=${time}&quantity=${quantity}`;
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>记录抽烟冲动 - 戒烟助手</title>
+    <link rel="stylesheet" href="assets/styles/main.css">
+    <style>
+        .record-page {
+            padding: 20px 16px;
+            background: #F5F5F5;
+            min-height: 100vh;
+        }
+
+        .page-title {
+            background: #fff;
+            padding: 12px 16px;
+            margin: -20px -16px 20px;
+            font-size: 18px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .form-label {
+            color: #333;
+            font-size: 16px;
+        }
+
+        .form-input {
+            border: none;
+            text-align: right;
+            font-size: 16px;
+            color: #333;
+            width: 200px;
+            padding: 4px;
+        }
+
+        .form-input:focus {
+            outline: none;
+        }
+
+        .form-textarea {
+            width: 100%;
+            border: none;
+            margin-top: 8px;
+            min-height: 80px;
+            resize: none;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .save-btn {
+            background: #f45b49;
+            color: white;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            margin-top: 32px;
+            cursor: pointer;
+        }
+
+        .motivation {
+            text-align: center;
+            margin: 24px 0;
+            color: #666;
+        }
+
+        .motivation .main {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .motivation .sub {
+            font-size: 14px;
+            color: #999;
+        }
+
+        .tips {
+            background: #FFF5F5;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 32px;
+        }
+
+        .tips h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .tips ul {
+            list-style: none;
+            padding: 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .tips li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="record-page">
+        <h1 class="page-title">记录抽烟冲动</h1>
+
+        <form id="recordForm">
+            <div class="form-group">
+                <label class="form-label">抽烟时间</label>
+                <input type="datetime-local" class="form-input" id="smokeTime" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">根数</label>
+                <input type="number" class="form-input" value="1" min="1" id="quantity" required>
+            </div>
+
+            <div class="form-group" style="display: block;">
+                <label class="form-label">备注说明</label>
+                <textarea class="form-textarea" placeholder="这次抽烟的情绪和场景" id="notes"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">必要性</label>
+                <input type="number" class="form-input" value="6" min="1" max="10" id="necessity" required>
+            </div>
+
+            <button type="submit" class="save-btn">保存</button>
+        </form>
+
+        <div class="motivation">
+            <p class="main">戒烟是为了自己，不是为了别人</p>
+            <p class="sub">日常记录，观察进步</p>
+        </div>
+
+        <div class="tips">
+            <h3>小提示：</h3>
+            <ul>
+                <li>1、每支烟只抽一半；</li>
+                <li>2、延长每支烟之间的间隔；</li>
+                <li>3、避开特定的吸烟触发场景；（把火机藏好）</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 设置默认时间为当前时间
+        document.getElementById('smokeTime').value = new Date().toISOString().slice(0, 16);
+
+        // 处理表单提交
+        document.getElementById('recordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const record = {
+                timestamp: document.getElementById('smokeTime').value,
+                quantity: parseInt(document.getElementById('quantity').value),
+                notes: document.getElementById('notes').value,
+                necessity: parseInt(document.getElementById('necessity').value),
+                createdAt: new Date().toISOString()
+            };
+
+            // 保存记录
+            const records = JSON.parse(localStorage.getItem('urgeRecords') || '[]');
+            records.push(record);
+            localStorage.setItem('urgeRecords', JSON.stringify(records));
+
+            // 返回上一页
+            window.history.back();
+        });
+    </script>
+</body>
+</html> 

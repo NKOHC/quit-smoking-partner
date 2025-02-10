@@ -1,12 +1,28 @@
-# 系统文件
-.DS_Store
-Thumbs.db
+# Dependencies
+/node_modules
+package-lock.json
 
-# 编辑器文件
-.vscode/
+# Build output
+/dist
+/build
+
+# IDE and editor files
 .idea/
+.vscode/
 *.swp
 *.swo
+.DS_Store
 
-# 依赖目录
-node_modules/
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Cache directories
+.cache/
+.npm/
