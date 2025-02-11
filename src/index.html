@@ -5,58 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>戒烟助手</title>
     <link rel="stylesheet" href="assets/styles/main.css">
-    <style>
-        /* 添加新的样式 */
-        .section-title-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .edit-btn {
-            background: none;
-            border: none;
-            padding: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .edit-icon {
-            width: 20px;
-            height: 20px;
-            fill: #666; /* 根据需要调整颜色 */
-        }
-
-        .edit-btn:hover .edit-icon {
-            fill: #333;
-        }
-    </style>
 </head>
 <body>
     <div class="app-container">
         <!-- 目标展示区域 -->
-        <div id="goalContainer"></div>
+        <div id="goalContainer">
+            <div class="goal-card">
+                <div class="progress-circle">
+                    <div class="days-count">0</div>
+                    <div class="days-label">天</div>
+                </div>
+                <div class="goal-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">已少抽(根)</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">¥0.00</div>
+                        <div class="stat-label">已省钱</div>
+                    </div>
+                </div>
+                <div class="goal-info">
+                    <div>目标：30天</div>
+                    <div>还剩：30天</div>
+                </div>
+            </div>
+        </div>
 
         <!-- 记录表单区域 -->
         <div class="form-container">
             <h3>记录吸烟冲动</h3>
-            <form id="urgeForm"></form>
+            <form id="urgeForm">
+                <div class="form-group">
+                    <label>烟瘾强度</label>
+                    <div class="intensity-slider">
+                        <input type="range" min="1" max="10" value="5" id="intensitySlider">
+                        <span id="intensityValue">5</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>抽烟数量</label>
+                    <input type="number" min="1" id="countInput" value="1">
+                </div>
+                <div class="form-group">
+                    <label>备注说明</label>
+                    <textarea id="notesInput" placeholder="记录当前情况..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="resistedInput">
+                        成功抵制
+                    </label>
+                </div>
+                <button type="submit" class="submit-btn">保存记录</button>
+            </form>
         </div>
 
         <!-- 统计展示区域 -->
-        <div id="statsContainer"></div>
+        <div id="statsContainer">
+            <div class="stats-container">
+                <div class="stats-header">
+                    <h3>戒烟数据</h3>
+                    <span class="success-rate">成功率 0%</span>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">总冲动次数</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">成功抵抗</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">已少抽(根)</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">¥0.00</div>
+                        <div class="stat-label">已省钱</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- 导入服务和组件 -->
-    <script src="services/goalService.js"></script>
-    <script src="services/urgeService.js"></script>
-    <script src="services/statisticsService.js"></script>
-    <script src="components/GoalDisplay.js"></script>
-    <script src="components/UrgeForm.js"></script>
-    <script src="components/StatisticsDisplay.js"></script>
     <script src="index.js"></script>
 </body>
 </html>

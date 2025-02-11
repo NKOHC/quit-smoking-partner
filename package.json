@@ -4,15 +4,16 @@
   "description": "A web app to help quit smoking",
   "main": "index.js",
   "scripts": {
-    "start": "serve public",
-    "build": "rm -rf public/* && mkdir -p public && cp -r src/* public/",
+    "start": "http-server public",
+    "build": "tsc && cp src/index.html public/ && cp -r src/assets public/",
     "dev": "npm run build && npm start",
-    "watch": "nodemon --watch src --exec 'npm run build'"
+    "watch": "tsc -w"
   },
   "dependencies": {
-    "serve": "^14.2.1"
+    "http-server": "^14.1.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "typescript": "^5.0.0",
+    "@types/node": "^18.0.0"
   }
 }

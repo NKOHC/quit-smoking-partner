@@ -3,13 +3,19 @@ export class GoalDisplay {
     private container: HTMLElement;
     private goalService: GoalService;
 
-    constructor(containerId: string) {
+    constructor(containerId: string, private goalStorage: GoalStorage) {
+        console.log('[GoalDisplay] 初始化组件');
         this.container = document.getElementById(containerId);
+        if (!this.container) {
+            console.error('[GoalDisplay] 找不到容器元素:', containerId);
+        }
         this.goalService = new GoalService();
     }
 
     async render() {
-        const goal = await this.goalService.getCurrentGoal();
+        console.log('[GoalDisplay] 开始渲染');
+        const goal = await this.goalStorage.getGoal();
+        console.log('[GoalDisplay] 获取目标数据:', goal);
         if (!goal) {
             this.renderEmptyState();
             return;
